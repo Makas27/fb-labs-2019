@@ -7,74 +7,69 @@ import java.util.stream.Stream;
 import java.io.FileReader;
 
 public class Main {
-    static String pathToFile =
-            "C:\\Users\\kateh\\Documents\\кпи\\крипта\\17.txt";
+
 
     public static void main(String[] args) throws IOException {
-        String Text = returnText("C:\\Users\\kateh\\Documents\\кпи\\крипта\\17.txt");
-     //   System.out.println(Text);
-      //  Bigramm(Text);
-    //   System.out.println(Inverse(10, 7));
-
+        String text = readText("C:\\Users\\kateh\\Documents\\кпи\\крипта\\19.txt");
+        String cText = text.replaceAll("[^а-я]", "");
+        ab(cText);
 
     }
 
-    public static String returnText(String path) throws IOException {
-        String everything;
-        String line;
-        BufferedReader br = new BufferedReader(new
-                FileReader(pathToFile));
+    static String readText(String path) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        String res = "";
         try {
-            StringBuilder sb = new StringBuilder();
-            line = br.readLine();
-            while (line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
+            BufferedReader in = new BufferedReader(new FileReader(path));
+            String str;
+            while ((str = in.readLine()) != null) {
+                sb.append(str + " ");
             }
-            everything = sb.toString();
-        } finally {
-            br.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return everything;
+
+        res = sb.toString();
+        return res;
+
     }
 
-    public static int GCD(int a, int b) {
+    public static int gcd(int a, int b) {
         if (b == 0) return a;
-        return GCD(b, a % b);
+        return gcd(b, a % b);
     }
 
-    public static void Bigramm(String str) {
-        char[] strtochar = str.toCharArray();
-        Character ch1, ch2;
-        Map<String, Integer> BiMap = new HashMap<String, Integer>();
+    public static void bigramm(String str) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        String[] words = str.split("(?!^)");
         for (int i = 0; i < str.length() - 1; i++) {
-            ch1 = strtochar[i];
-            ch2 = strtochar[i + 1];
-            String s1 = ch1.toString();
-            String s2 = ch2.toString();
-            String s3 = s1 + s2;
-            if (!BiMap.containsKey(s3)) {
-                BiMap.put(s3, 1);
-            } else {
-                BiMap.put(s3, BiMap.compute(s3, (k, v) -> v + 1));
-            }
+            String s = words[i];
+            String s1 = words[i + 1];
+            String s2 = s + s1;
+            if (!s2.isEmpty())
+                if (map.containsKey(s2)) {
+                    map.put(s2, (map.get(s2) + 1));
+                } else {
+                    map.put(s2, 1);
+                }
         }
-        Map<String, Integer> topTen;
-        topTen = BiMap.entrySet().stream()
+
+        Map<String, Integer> top;
+        top = map.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        System.out.println(topTen);
+        System.out.println(top);
     }
 
-    public static int Inverse(int a, int m) {
+    public static int inverse(int a, int m) {
         int t = 0;
         int T = 1;
         int r = m;
         int R = a;
-        if (GCD(a, m) != 1) return 0;
+        if (gcd(a, m) != 1) return 0;
         else {
             while (R != 0) {
                 int q = r / R;
@@ -91,4 +86,144 @@ public class Main {
         if (t < 0) t += m;
         return t;
     }
+
+    public static int index(char c) {
+        String string = "абвгдежзийклмнопрстуфхцчшщьыэюя";
+        char[] ch = string.toCharArray();
+        for (int i = 0; i < string.length(); i++) {
+            if (ch[i] == c) {
+//                System.out.println(i);
+                return i;
+            }
+
+        }
+        return -1;
+    }
+
+    public static char indexNew(int number) {
+        String string = "абвгдежзийклмнопрстуфхцчшщьыэюя";
+
+        char[] ch = string.toCharArray();
+        for (int i = 0; i < ch.length; i++) {
+            if (i == number) {
+//                System.out.println(ch[i]);
+                return ch[i];
+            }
+        }
+        return 0;
+    }
+
+    public static void topBigr() {
+
+        String[] topY = {"уф", "иж", "ьи", "кщ", "хф"};
+        for (int i = 0; i < 5; i++) {
+            System.out.println(topY[i] + " = " + funcY(topY[i]));
+        }
+        String[] topX = {"ст", "но", "то", "на", "ен"};
+        for (int i = 0; i < 5; i++) {
+            System.out.println(topX[i] + " = " + funcY(topX[i]));
+        }
+    }
+
+    public static void ab(String criptedText) {
+        int[] closeB = {609, 254, 814, 335, 671};
+        int[] openB = {545, 417, 572, 403, 168};
+        int y = 0, x = 0, a = 0, b = 0, s = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
+                    for (int l = 0; l < 5; l++) {
+
+                        x = inverse((closeB[i] - closeB[j]), 961);
+                        y = openB[k] - openB[l];
+
+                        if (x < 0) x += 961;
+                        if (y < 0) y += 961;
+
+                        a = (x * y) % 961;
+
+                        b = (closeB[i] - (inverse(a, 961) * openB[k])) % 961;
+
+                        if (a < 0) a += 961;
+                        if (b < 0) b += 961;
+
+                        prov(decrypt(criptedText, a, b));
+//                        System.out.println(a + "=" + b);
+
+                    }
+                }
+            }
+        }
+    }
+
+    static public int funcY(String ab) {
+        char[] newAB = ab.toCharArray();
+        int a = index(newAB[0]);
+        int b = index(newAB[1]);
+        int y = a * 31 + b;
+//        System.out.println(y);
+        return y;
+    }
+
+    static public String decrypt(String str, int a, int b) {
+        String[] words = str.split("(?<=\\G.{2})");
+        String Text = "";
+        for (String symb : words) {
+            int open = a * (funcY(symb) - b) % 961;
+            if (open < 0) open += 961;
+            int el1 = open / 31;
+            int el2 = open % 31;
+            String s = String.valueOf(indexNew(el1));
+            String s1 = String.valueOf(indexNew(el2));
+            Text += s + s1;
+        }
+//        System.out.println(Text);
+        return Text;
+    }
+
+    public static void prov(String str) {
+
+        boolean isContain = str.contains("кщ");
+        if (isContain == true) {
+//            System.out.println("ERR1");
+        }
+
+        boolean isContain1 = str.contains("шя");
+        if (isContain1 == true) {
+//            System.out.println("ERR2");
+        }
+
+        boolean isContain2 = str.contains("чц");
+        if (isContain2 == true) {
+//            System.out.println("ERR3");
+        }
+
+        boolean isContain3 = str.contains("вй");
+        if (isContain3 == true) {
+//            System.out.println("ERR4");
+        }
+
+        boolean isContain4 = str.contains("гю");
+        if (isContain4 == true) {
+//            System.out.println("ERR5");
+        }
+
+        boolean isContain5 = str.contains("жш");
+        if (isContain5 == true) {
+//            System.out.println("ERR6");
+        }
+        boolean isContain6 = str.contains("ааааа");
+        if (isContain6 == true) {
+//            System.out.println("ERR7");
+        }
+
+        else if (isContain == false && isContain1 == false && isContain2 == false && isContain3 == false && isContain4 == false && isContain5 == false&& isContain6 == false)
+            System.out.println(str);
+    }
+
 }
+
+
+
+
+
