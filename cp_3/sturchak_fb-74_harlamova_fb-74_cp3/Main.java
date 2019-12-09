@@ -37,6 +37,7 @@ public class Main {
 
     public static int gcd(int a, int b) {
         if (b == 0) return a;
+        //  System.out.println(gcd(b, a % b));
         return gcd(b, a % b);
     }
 
@@ -125,30 +126,40 @@ public class Main {
         }
     }
 
+
     public static void ab(String criptedText) {
         int[] closeB = {609, 254, 814, 335, 671};
         int[] openB = {545, 417, 572, 403, 168};
-        int y = 0, x = 0, a = 0, b = 0, s = 0;
+        int y = 0, x = 0, a = 0, b = 0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 for (int k = 0; k < 5; k++) {
                     for (int l = 0; l < 5; l++) {
 
-                        x = inverse((closeB[i] - closeB[j]), 961);
-                        y = openB[k] - openB[l];
+                        if (gcd((closeB[i] - closeB[j]), 961) == 961 ||  gcd(openB[k] - openB[l],961)==961 ) {
+                         //   System.out.println("");
+                        } else if (gcd((closeB[i] - closeB[j]), 961) == 1 & gcd(openB[k] - openB[l],961)==1 ) {
+                            x = inverse((closeB[i] - closeB[j]), 961);
+                            y = openB[k] - openB[l];
+                            if (x < 0) x += 961;
+                            if (y < 0) y += 961;
 
-                        if (x < 0) x += 961;
-                        if (y < 0) y += 961;
+                            a = (x * y) % 961;
 
-                        a = (x * y) % 961;
-
-                        b = (closeB[i] - (inverse(a, 961) * openB[k])) % 961;
-
-                        if (a < 0) a += 961;
-                        if (b < 0) b += 961;
-
-                        prov(decrypt(criptedText, a, b));
-//                        System.out.println(a + "=" + b);
+                            if (a < 0) a += 961;
+                            if (a > 1) {
+                                b = (closeB[i] - (inverse(a, 961) * openB[k])) % 961;
+                            }
+                            if (b < 0) b += 961;
+                            System.out.println("a = " + a + " " + "b = " + b);
+                            String o = String.valueOf(indexNew(a / 31));
+                            String o1 = String.valueOf(indexNew(a % 31));
+                            String o2 = String.valueOf(indexNew(b / 31));
+                            String o3 = String.valueOf(indexNew(b % 31));
+                            System.out.println(("(" + o + o1 + " , " + o2 + o3 + ")").toString());
+                            prov(decrypt(criptedText, a, b));
+                            System.out.println("-------------");
+                        }
 
                     }
                 }
@@ -181,43 +192,42 @@ public class Main {
         return Text;
     }
 
+
     public static void prov(String str) {
 
         boolean isContain = str.contains("кщ");
         if (isContain == true) {
-//            System.out.println("ERR1");
+            System.out.println("Невозможное сочитание : кщ");
         }
 
         boolean isContain1 = str.contains("шя");
         if (isContain1 == true) {
-//            System.out.println("ERR2");
+            System.out.println("Невозможное сочитание : шя");
         }
 
         boolean isContain2 = str.contains("чц");
         if (isContain2 == true) {
-//            System.out.println("ERR3");
+            System.out.println("Невозможное сочитание : чц");
         }
 
         boolean isContain3 = str.contains("вй");
         if (isContain3 == true) {
-//            System.out.println("ERR4");
+            System.out.println("Невозможное сочитание : вй");
         }
 
         boolean isContain4 = str.contains("гю");
         if (isContain4 == true) {
-//            System.out.println("ERR5");
+            System.out.println("Невозможное сочитание : гю");
         }
 
         boolean isContain5 = str.contains("жш");
         if (isContain5 == true) {
-//            System.out.println("ERR6");
+            System.out.println("Невозможное сочитание : жш");
         }
         boolean isContain6 = str.contains("ааааа");
         if (isContain6 == true) {
-//            System.out.println("ERR7");
-        }
-
-        else if (isContain == false && isContain1 == false && isContain2 == false && isContain3 == false && isContain4 == false && isContain5 == false&& isContain6 == false)
+            System.out.println("Частое повторение : а");
+        } else if (isContain == false && isContain1 == false && isContain2 == false && isContain3 == false && isContain4 == false && isContain5 == false && isContain6 == false)
             System.out.println(str);
     }
 
